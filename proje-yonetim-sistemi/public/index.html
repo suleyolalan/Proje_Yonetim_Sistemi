@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Yönetim Sistemi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: #4f46e5;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #6b7280;
+            font-size: 1.1em;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .nav-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);
+        }
+        
+        .nav-btn.active {
+            background: linear-gradient(135deg, #059669, #0d9488);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.3);
+        }
+        
+        .content-area {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            min-height: 500px;
+        }
+        
+        .section {
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #4f46e5;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card h3 {
+            color: #4f46e5;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, 
+        .form-group select:focus, 
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #0d9488);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+        
+        .table th {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .table tr:hover {
+            background-color: #f8fafc;
+        }
+        
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-planlaniyor {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-devam-ediyor {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-tamamlandi {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-iptal-edildi {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid #4f46e5;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #4f46e5;
+            display: block;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+        
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .nav-btn {
+                width: 200px;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Proje Yönetim Sistemi</h1>
+            <p>Modern ve etkili proje yönetimi için tüm araçlarınız</p>
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn active" onclick="showSection('dashboard')">📊 Ana Panel</button>
+            <button class="nav-btn" onclick="showSection('employees')">👥 Çalışanlar</button>
+            <button class="nav-btn" onclick="showSection('projects')">📋 Projeler</button>
+            <button class="nav-btn" onclick="showSection('add-employee')">➕ Çalışan Ekle</button>
+            <button class="nav-btn" onclick="showSection('add-project')">➕ Proje Ekle</button>
+        </div>
+        
+        <div class="content-area">
+            <!-- Ana Panel -->
+            <div id="dashboard" class="section active">
+                <h2>📊 Ana Panel</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <span class="stat-number" id="totalEmployees">-</span>
+                        <div class="stat-label">Toplam Çalışan</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="totalProjects">-</span>
+                        <div class="stat-label">Toplam Proje</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="activeProjects">-</span>
+                        <div class="stat-label">Aktif Proje</div>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number" id="completedProjects">-</span>
+                        <div class="stat-label">Tamamlanan Proje</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <h3>📈 Hızlı İstatistikler</h3>
+                    <p>Sistem başarıyla çalışıyor! Veritabanı bağlantısı aktif.</p>
+                    <p><strong>API Durumu:</strong> <span style="color: #059669;">✅ Aktif</span></p>
+                    <p><strong>Son Güncelleme:</strong> <span id="lastUpdate">-</span></p>
+                </div>
+            </div>
+            
+            <!-- Çalışanlar -->
+            <div id="employees" class="section">
+                <h2>👥 Çalışanlar</h2>
+                <div class="loading">Çalışanlar yükleniyor...</div>
+                <table class="table" id="employeesTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Ad Soyad</th>
+                            <th>Email</th>
+                            <th>Pozisyon</th>
+                            <th>Maaş</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeesData">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Projeler -->
+            <div id="projects" class="section">
+                <h2>📋 Projeler</h2>
+                <div class="loading">Projeler yükleniyor...</div>
+                <table class="table" id="projectsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Proje Adı</th>
+                            <th>Durum</th>
+                            <th>Bütçe</th>
+                            <th>Başlangıç</th>
+                            <th>Bitiş</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsData">
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Çalışan Ekle -->
+            <div id="add-employee" class="section">
+                <div class="card">
+                    <h3>➕ Yeni Çalışan Ekle</h3>
+                    <form id="addEmployeeForm">
+                        <div class="form-group">
+                            <label>Ad:</label>
+                            <input type="text" id="empName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Soyad:</label>
+                            <input type="text" id="empSurname" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email:</label>
+                            <input type="email" id="empEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Pozisyon:</label>
+                            <input type="text" id="empPosition">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefon:</label>
+                            <input type="text" id="empPhone">
+                        </div>
+                        <div class="form-group">
+                            <label>Başlangıç Tarihi:</label>
+                            <input type="date" id="empStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Maaş:</label>
+                            <input type="number" id="empSalary" step="0.01">
+                        </div>
+                        <button type="submit" class="btn btn-success">💾 Çalışan Ekle</button>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Proje Ekle -->
+            <div id="add-project" class="section">
+                <div class="card">
+                    <h3>➕ Yeni Proje Ekle</h3>
+                    <form id="addProjectForm">
+                        <div class="form-group">
+                            <label>Proje Adı:</label>
+                            <input type="text" id="projName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Açıklama:</label>
+                            <textarea id="projDescription" rows="3"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Başlangıç Tarihi:</label>
+                            <input type="date" id="projStartDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Bitiş Tarihi:</label>
+                            <input type="date" id="projEndDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Durum:</label>
+                            <select id="projStatus">
+                                <option value="planlaniyor">📝 Planlanıyor</option>
+                                <option value="devam_ediyor">🚀 Devam Ediyor</option>
+                                <option value="tamamlandi">✅ Tamamlandı</option>
+                                <option value="iptal_edildi">❌ İptal Edildi</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Bütçe:</label>
+                            <input type="number" id="projBudget" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Proje Yöneticisi:</label>
+                            <select id="projManager">
+                                <option value="">Seçiniz...</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success">💾 Proje Ekle</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // API Base URL
+        const API_BASE = 'http://localhost:3000/api';
+        
+        // Sayfa yükleme
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDashboard();
+            loadEmployeesForDropdown();
+        });
+        
+        // Sekme değiştirme
+        function showSection(sectionName) {
+            // Tüm sekmeleri gizle
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Tüm butonları pasif yap
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Seçilen sekmeyi göster
+            document.getElementById(sectionName).classList.add('active');
+            event.target.classList.add('active');
+            
+            // Veri yükleme
+            if (sectionName === 'employees') {
+                loadEmployees();
+            } else if (sectionName === 'projects') {
+                loadProjects();
+            } else if (sectionName === 'dashboard') {
+                loadDashboard();
+            }
+        }
+        
+        // Ana panel verilerini yükle
+        async function loadDashboard() {
+            try {
+                // İstatistikleri yükle
+                const employees = await fetch(`${API_BASE}/employees`);
+                const projects = await fetch(`${API_BASE}/projects`);
+                
+                if (employees.ok && projects.ok) {
+                    const empData = await employees.json();
+                    const projData = await projects.json();
+                    
+                    document.getElementById('totalEmployees').textContent = empData.length;
+                    document.getElementById('totalProjects').textContent = projData.length;
+                    
+                    const activeProjects = projData.filter(p => p.durum === 'devam_ediyor').length;
+                    const completedProjects = projData.filter(p => p.durum === 'tamamlandi').length;
+                    
+                    document.getElementById('activeProjects').textContent = activeProjects;
+                    document.getElementById('completedProjects').textContent = completedProjects;
+                    
+                    document.getElementById('lastUpdate').textContent = new Date().toLocaleString('tr-TR');
+                }
+            } catch (error) {
+                console.error('Dashboard verisi yüklenemedi:', error);
+                document.getElementById('totalEmployees').textContent = 'Hata';
+                document.getElementById('totalProjects').textContent = 'Hata';
+            }
+        }
+        
+        // Çalışanları yükle
+        async function loadEmployees() {
+            try {
+                const response = await fetch(`${API_BASE}/employees`);
+                const employees = await response.json();
+                
+                const tableBody = document.getElementById('employeesData');
+                const table = document.getElementById('employeesTable');
+                
+                if (response.ok) {
+                    tableBody.innerHTML = employees.map(emp => `
+                        <tr>
+                            <td>${emp.id}</td>
+                            <td>${emp.ad} ${emp.soyad}</td>
+                            <td>${emp.email}</td>
+                            <td>${emp.pozisyon || '-'}</td>
+                            <td>${emp.maas ? emp.maas.toLocaleString('tr-TR') + ' ₺' : '-'}</td>
+                            <td>
+                                <button class="btn btn-danger" onclick="deleteEmployee(${emp.id})">🗑️ Sil</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    
+                    table.style.display = 'table';
+                    document.querySelector('#employees .loading').style.display = 'none';
+                } else {
+                    throw new Error('Çalışanlar yüklenemedi');
+                }
+            } catch (error) {
+                document.querySelector('#employees .loading').innerHTML = 
+                    '<div class="error">❌ Çalışanlar yüklenirken hata oluştu: ' + error.message + '</div>';
+            }
+        }
+        
+        // Projeleri yükle
+        async function loadProjects() {
+            try {
+                const response = await fetch(`${API_BASE}/projects`);
+                const projects = await response.json();
+                
+                const tableBody = document.getElementById('projectsData');
+                const table = document.getElementById('projectsTable');
+                
+                if (response.ok) {
+                    tableBody.innerHTML = projects.map(proj => `
+                        <tr>
+                            <td>${proj.id}</td>
+                            <td>${proj.proje_adi}</td>
+                            <td><span class="status-badge status-${proj.durum}">${getStatusText(proj.durum)}</span></td>
+                            <td>${proj.butce ? proj.butce.toLocaleString('tr-TR') + ' ₺' : '-'}</td>
+                            <td>${proj.baslangic_tarihi || '-'}</td>
+                            <td>${proj.bitis_tarihi || '-'}</td>
+                            <td>
+                                <button class="btn btn-danger" onclick="deleteProject(${proj.id})">🗑️ Sil</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                    
+                    table.style.display = 'table';
+                    document.querySelector('#projects .loading').style.display = 'none';
+                } else {
+                    throw new Error('Projeler yüklenemedi');
+                }
+            } catch (error) {
+                document.querySelector('#projects .loading').innerHTML = 
+                    '<div class="error">❌ Projeler yüklenirken hata oluştu: ' + error.message + '</div>';
+            }
+        }
+        
+        // Durum metni çeviri
+        function getStatusText(status) {
+            const statusMap = {
+                'planlaniyor': '📝 Planlanıyor',
+                'devam_ediyor': '🚀 Devam Ediyor',
+                'tamamlandi': '✅ Tamamlandı',
+                'iptal_edildi': '❌ İptal Edildi'
+            };
+            return statusMap[status] || status;
+        }
+        
+        // Dropdown için çalışanları yükle
+        async function loadEmployeesForDropdown() {
+            try {
+                const response = await fetch(`${API_BASE}/employees`);
+                const employees = await response.json();
+                
+                const dropdown = document.getElementById('projManager');
+                dropdown.innerHTML = '<option value="">Seçiniz...</option>' +
+                    employees.map(emp => 
+                        `<option value="${emp.id}">${emp.ad} ${emp.soyad} (${emp.pozisyon})</option>`
+                    ).join('');
+            } catch (error) {
+                console.error('Çalışanlar dropdown\'a yüklenemedi:', error);
+            }
+        }
+        
+        // Çalışan ekleme formu
+        document.getElementById('addEmployeeForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const employeeData = {
+                ad: document.getElementById('empName').value,
+                soyad: document.getElementById('empSurname').value,
+                email: document.getElementById('empEmail').value,
+                pozisyon: document.getElementById('empPosition').value,
+                telefon: document.getElementById('empPhone').value,
+                baslangic_tarihi: document.getElementById('empStartDate').value,
+                maas: parseFloat(document.getElementById('empSalary').value) || null
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/employees`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(employeeData)
+                });
+                
+                if (response.ok) {
+                    alert('✅ Çalışan başarıyla eklendi!');
+                    document.getElementById('addEmployeeForm').reset();
+                    loadEmployeesForDropdown();
+                } else {
+                    throw new Error('Çalışan eklenemedi');
+                }
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        });
+        
+        // Proje ekleme formu
+        document.getElementById('addProjectForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const projectData = {
+                proje_adi: document.getElementById('projName').value,
+                aciklama: document.getElementById('projDescription').value,
+                baslangic_tarihi: document.getElementById('projStartDate').value,
+                bitis_tarihi: document.getElementById('projEndDate').value,
+                durum: document.getElementById('projStatus').value,
+                butce: parseFloat(document.getElementById('projBudget').value) || null,
+                proje_yoneticisi_id: parseInt(document.getElementById('projManager').value) || null
+            };
+            
+            try {
+                const response = await fetch(`${API_BASE}/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projectData)
+                });
+                
+                if (response.ok) {
+                    alert('✅ Proje başarıyla eklendi!');
+                    document.getElementById('addProjectForm').reset();
+                } else {
+                    throw new Error('Proje eklenemedi');
+                }
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        });
+        
+        // Çalışan silme
+        async function deleteEmployee(id) {
+            if (!confirm('Bu çalışanı silmek istediğinizden emin misiniz?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/employees/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('✅ Çalışan silindi!');
+                    loadEmployees();
+                    loadEmployeesForDropdown();
+                } else {
+                    throw new Error('Çalışan silinemedi');
+                }
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        }
+        
+        // Proje silme
+        async function deleteProject(id) {
+            if (!confirm('Bu projeyi silmek istediğinizden emin misiniz?')) return;
+            
+            try {
+                const response = await fetch(`${API_BASE}/projects/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    alert('✅ Proje silindi!');
+                    loadProjects();
+                } else {
+                    throw new Error('Proje silinemedi');
+                }
+            } catch (error) {
+                alert('❌ Hata: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

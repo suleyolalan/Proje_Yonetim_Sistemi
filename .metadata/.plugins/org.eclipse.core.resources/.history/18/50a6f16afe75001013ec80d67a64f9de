@@ -1,0 +1,5 @@
+package com.proje.entity;
+
+public enum ProjeDurumu {
+
+}
