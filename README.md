@@ -3,8 +3,8 @@ Modern ve kullanıcı dostu proje yönetim web uygulaması. Node.js, PostgreSQL 
 
 ## ✨ Özellikler
 
-Çalışan Yönetimi - Çalışan ekleme, listeleme ve silme
-Proje Yönetimi - Proje oluşturma ve takibi
-Görev Yönetimi - Görev atama ve durum takibi
-Ana Panel - İstatistikler ve genel bakış
-Modern Arayüz - Responsive ve kullanıcı dostu tasarım
+- Çalışan Yönetimi - Çalışan ekleme, listeleme ve silme 
+- Proje Yönetimi - Proje oluşturma ve takibi 
+- Görev Yönetimi - Görev atama ve durum takibi 
+- Ana Panel - İstatistikler ve genel bakış 
+- Modern Arayüz - Responsive ve kullanıcı dostu tasarım
